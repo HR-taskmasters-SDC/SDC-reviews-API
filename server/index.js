@@ -23,7 +23,7 @@ app.get('/reviews/:product_id', (req, res) => {
   const queryStr = `SELECT * FROM reviews
                     WHERE product_id = ${product_id}
                     ${orderBy}
-                    LIMIT ${count}
+                    LIMIT ${count * page}
                     ;`
 
   db.query(queryStr, (err, result) => {
@@ -35,8 +35,23 @@ app.get('/reviews/:product_id', (req, res) => {
   })
 });
 
-// app.get('/reviews/meta')
-// .get(`${Options.URL}/reviews/meta/?product_id=${props.selected.id}`, {
+app.get('/reviews/:product_id/meta', (req, res) => {
+  const product_id = req.params.product_id;
+  const queryStr = `SELECT * FROM reviews
+                    JOIN characteristic_reviews
+                    ON reviews.id = characteristic_reviews.review_id
+                    JOIN characteristics
+                    ON characteristic_reviews.characteristic_id = characteristics.id
+                    WHERE reviews.product_id = ${product_id};`
+
+  db.query(queryStr, (err, result) => {
+    if (err) {
+      console.error(err);
+    } else {
+      res.status(200).send(result);
+    }
+  })
+})
 
 app.post('/reviews/:product_id', (req, res) => {
   const product_id = req.params.product_id;
