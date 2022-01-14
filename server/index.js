@@ -46,8 +46,8 @@ app.post('/reviews/:product_id', (req, res) => {
   const body = req.body.body;
   const recommend = req.body.recommend || false;
   const reported = req.body.reported || false;
-  const reviewer_name = req.body.name;
-  const reviewer_email = req.body.email;
+  const reviewer_name = req.body.reviewer_name;
+  const reviewer_email = req.body.reviewer_email;
   const response = req.body.response || null;
   const helpfulness = req.body.helpfulness || 0;
 

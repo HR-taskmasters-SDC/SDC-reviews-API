@@ -17,6 +17,9 @@ CREATE TABLE IF NOT EXISTS reviews (
   helpfulness INT
 );
 
+SELECT setval('reviews_id_seq', (SELECT MAX(id) FROM reviews));
+ALTER SEQUENCE reviews_id_seq RESTART WITH (SELECT COUNT FROM reviews) + 1;
+
 CREATE TABLE IF NOT EXISTS reviews_photos (
   id SERIAL NOT NULL PRIMARY KEY,
   review_id INT REFERENCES reviews (id),
