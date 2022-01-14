@@ -51,7 +51,10 @@ app.post('/reviews/:product_id', (req, res) => {
   const response = req.body.response || null;
   const helpfulness = req.body.helpfulness || 0;
 
-  const queryStr = `INSERT INTO reviews (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness) VALUES (${product_id}, ${rating}, ${date}, '${summary}', '${body}', ${recommend}, ${reported}, '${reviewer_name}', '${reviewer_email}', '${response}', ${helpfulness});`
+  const queryStr = `INSERT INTO reviews
+                    (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
+                    VALUES
+                    (${product_id}, ${rating}, ${date}, '${summary}', '${body}', ${recommend}, ${reported}, '${reviewer_name}', '${reviewer_email}', '${response}', ${helpfulness});`
 
   db.query(queryStr, (err, result) => {
     if (err) {
@@ -62,52 +65,32 @@ app.post('/reviews/:product_id', (req, res) => {
   })
 });
 
-// .post(
-//   `${Options.URL}/reviews`,
-//   {
-//     product_id: props.selected.id,
-//     rating: rating,
-//     summary: summary,
-//     body: body,
-//     recommend: recommend,
-//     name: nickname,
-//     email: email,
-//     photos: photos,
-//     characteristics: characteristics,
-//   },
-
-
 app.put('/reviews/:review_id/helpful', (req, res) => {
-  const queryStr = ';'
-  db.query(queryStr, params, (err, result) => {
+  const review_id = req.params.review_id;
+  const queryStr = `UPDATE reviews
+                    SET helpfulness = helpfulness + 1
+                    WHERE id = ${review_id};`
+  db.query(queryStr, (err, result) => {
     if (err) {
       console.error(err);
     } else {
-      res.sendStatus()
+      res.sendStatus(204);
     }
   })
 });
-
-// axios
-//         .put(`${Options.URL}/reviews/${props.review.review_id}/helpful`, null, {
-//           headers: {
-//             Authorization: Options.TOKEN,
-//           },
-
-
 
 app.put('/reviews/:review_id/report', (req, res) => {
-  const queryStr = ';'
-  db.query(queryStr, params, (err, result) => {
+  const review_id = req.params.review_id;
+  const queryStr = `UPDATE reviews
+                    SET reported = NOT reported
+                    WHERE id = ${review_id};`
+  db.query(queryStr, (err, result) => {
     if (err) {
       console.error(err);
     } else {
-      res.sendStatus()
+      res.sendStatus(204);
     }
   })
 });
-
-
-//.put(`${Options.URL}/reviews/${props.review.review_id}/report`, null,
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
