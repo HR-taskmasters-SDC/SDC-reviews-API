@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS sdc_reviews;
 
 CREATE DATABASE sdc_reviews;
 
-CREATE TABLE products (
+CREATE TABLE IF NOT EXISTS products (
   id SERIAL NOT NULL PRIMARY KEY,
   name VARCHAR,
   slogan VARCHAR,
@@ -11,9 +11,7 @@ CREATE TABLE products (
   default_price INT
 );
 
-COPY products FROM '/Users/matt/Desktop/work/data/product.csv' DELIMITERS ',' CSV header;
-
-CREATE TABLE reviews (
+CREATE TABLE IF NOT EXISTS reviews (
   id SERIAL NOT NULL PRIMARY KEY,
   product_id INT REFERENCES products (id),
   rating INT,
@@ -28,30 +26,30 @@ CREATE TABLE reviews (
   helpfulness INT
 );
 
-COPY reviews FROM '/Users/matt/Desktop/work/data/reviews.csv' DELIMITERS ',' CSV header;
-
-CREATE TABLE reviews_photos (
+CREATE TABLE IF NOT EXISTS reviews_photos (
   id SERIAL NOT NULL PRIMARY KEY,
   review_id INT REFERENCES reviews (id),
   url VARCHAR
 );
 
-COPY reviews_photos FROM '/Users/matt/Desktop/work/data/reviews_photos.csv' DELIMITERS ',' CSV header;
-
-CREATE TABLE characteristics (
+CREATE TABLE IF NOT EXISTS characteristics (
   id SERIAL NOT NULL PRIMARY KEY,
   product_id INT REFERENCES products (id),
   name VARCHAR
 );
 
-COPY characteristics FROM '/Users/matt/Desktop/work/data/characteristics.csv' DELIMITERS ',' CSV header;
-
-CREATE TABLE characteristic_reviews (
+CREATE TABLE IF NOT EXISTS characteristic_reviews (
   id SERIAL NOT NULL PRIMARY KEY,
   characteristic_id INT REFERENCES characteristics (id),
   review_id	INT REFERENCES reviews (id),
   value INT
 );
 
+TRUNCATE TABLE products, reviews, reviews_photos, characteristics, characteristic_reviews;
+
+COPY products FROM '/Users/matt/Desktop/work/data/product.csv' DELIMITERS ',' CSV header;
+COPY reviews FROM '/Users/matt/Desktop/work/data/reviews.csv' DELIMITERS ',' CSV header;
+COPY reviews_photos FROM '/Users/matt/Desktop/work/data/reviews_photos.csv' DELIMITERS ',' CSV header;
+COPY characteristics FROM '/Users/matt/Desktop/work/data/characteristics.csv' DELIMITERS ',' CSV header;
 COPY characteristic_reviews FROM '/Users/matt/Desktop/work/data/characteristic_reviews.csv' DELIMITERS ',' CSV header;
 

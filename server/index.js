@@ -35,9 +35,6 @@ app.get('/reviews/:product_id', (req, res) => {
   })
 });
 
-// .get(
-//   `${Options.URL}/reviews/?product_id=${props.selected.id}&count=999`,
-
 // app.get('/reviews/meta')
 // .get(`${Options.URL}/reviews/meta/?product_id=${props.selected.id}`, {
 
