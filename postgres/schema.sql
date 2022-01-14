@@ -2,18 +2,9 @@ DROP DATABASE IF EXISTS sdc_reviews;
 
 CREATE DATABASE sdc_reviews;
 
-CREATE TABLE IF NOT EXISTS products (
-  id SERIAL NOT NULL PRIMARY KEY,
-  name VARCHAR,
-  slogan VARCHAR,
-  description	VARCHAR,
-  category VARCHAR,
-  default_price INT
-);
-
 CREATE TABLE IF NOT EXISTS reviews (
   id SERIAL NOT NULL PRIMARY KEY,
-  product_id INT REFERENCES products (id),
+  product_id INT,
   rating INT,
   date VARCHAR,
   summary VARCHAR,
@@ -34,7 +25,7 @@ CREATE TABLE IF NOT EXISTS reviews_photos (
 
 CREATE TABLE IF NOT EXISTS characteristics (
   id SERIAL NOT NULL PRIMARY KEY,
-  product_id INT REFERENCES products (id),
+  product_id INT,
   name VARCHAR
 );
 
@@ -45,9 +36,8 @@ CREATE TABLE IF NOT EXISTS characteristic_reviews (
   value INT
 );
 
-TRUNCATE TABLE products, reviews, reviews_photos, characteristics, characteristic_reviews;
+TRUNCATE TABLE reviews, reviews_photos, characteristics, characteristic_reviews;
 
-COPY products FROM '/Users/matt/Desktop/work/data/product.csv' DELIMITERS ',' CSV header;
 COPY reviews FROM '/Users/matt/Desktop/work/data/reviews.csv' DELIMITERS ',' CSV header;
 COPY reviews_photos FROM '/Users/matt/Desktop/work/data/reviews_photos.csv' DELIMITERS ',' CSV header;
 COPY characteristics FROM '/Users/matt/Desktop/work/data/characteristics.csv' DELIMITERS ',' CSV header;

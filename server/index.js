@@ -39,10 +39,21 @@ app.get('/reviews/:product_id', (req, res) => {
 // .get(`${Options.URL}/reviews/meta/?product_id=${props.selected.id}`, {
 
 app.post('/reviews/:product_id', (req, res) => {
+  const product_id = req.params.product_id;
+  const date = Date.now().toString();
+  const rating = req.body.rating;
+  const summary = req.body.summary;
+  const body = req.body.body;
+  const recommend = req.body.recommend || false;
+  const reported = req.body.reported || false;
+  const reviewer_name = req.body.name;
+  const reviewer_email = req.body.email;
+  const response = req.body.response || null;
+  const helpfulness = req.body.helpfulness || 0;
 
+  const queryStr = `INSERT INTO reviews (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness) VALUES (${product_id}, ${rating}, ${date}, '${summary}', '${body}', ${recommend}, ${reported}, '${reviewer_name}', '${reviewer_email}', '${response}', ${helpfulness});`
 
-  const queryStr = 'INSERT INTO reviews () VALUES (?);'
-  db.query(queryStr, params, (err, result) => {
+  db.query(queryStr, (err, result) => {
     if (err) {
       console.error(err);
     } else {
