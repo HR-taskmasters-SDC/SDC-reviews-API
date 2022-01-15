@@ -62,12 +62,43 @@ app.get('/reviews/:product_id', (req, res) => {
 
 app.get('/reviews/:product_id/meta', (req, res) => {
   const product_id = req.params.product_id;
-  const queryStr = `SELECT * FROM reviews
-                    JOIN characteristic_reviews
-                    ON reviews.id = characteristic_reviews.review_id
-                    JOIN characteristics
-                    ON characteristic_reviews.characteristic_id = characteristics.id
-                    WHERE reviews.product_id = ${product_id};`
+  const queryStr =
+      `
+      SELECT rv.id AS id, rv.product_id, (
+        SELECT JSON_AGG(JSON_BUILD_OBJECT(rating, count))
+        FROM (
+          SELECT rating, COUNT(*) as count
+          FROM reviews
+          WHERE product_id = ${product_id}
+          GROUP BY rating
+        ) rating
+      ) AS ratings,
+      (
+        SELECT JSON_AGG(JSON_BUILD_OBJECT(recommend, count))
+        FROM (
+          SELECT recommend, COUNT(*) as count
+          FROM reviews
+          WHERE product_id = ${product_id}
+          GROUP BY recommend
+        ) recommend
+      ) AS recommended
+      FROM reviews rv
+      JOIN characteristic_reviews cr
+      ON rv.id = cr.review_id
+      JOIN characteristics c
+      ON cr.characteristic_id = c.id
+      WHERE rv.product_id = ${product_id}
+    ;`
+
+    // `
+    //   SELECT rv.id AS id, rv.product_id, rating, recommend, cr.id, cr.characteristic_id, cr.review_id, cr.value, c.name
+    //   FROM reviews rv
+    //   JOIN characteristic_reviews cr
+    //   ON rv.id = cr.review_id
+    //   JOIN characteristics c
+    //   ON cr.characteristic_id = c.id
+    //   WHERE rv.product_id = ${product_id}
+    // ;`
 
   db.query(queryStr, (err, result) => {
     if (err) {
