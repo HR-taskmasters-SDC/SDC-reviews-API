@@ -20,11 +20,28 @@ app.get('/reviews/:product_id', (req, res) => {
     orderBy = 'ORDER BY helpfulness DESC';
   }
 
-  const queryStr = `SELECT * FROM reviews
-                    WHERE product_id = ${product_id}
-                    ${orderBy}
-                    LIMIT ${count * page}
-                    ;`
+  const queryStr =
+    `
+      SELECT rv.id as review_id, rv.rating, rv.summary, rv.recommend, rv.response, rv.body, rv.date, rv.reviewer_name, rv.helpfulness,
+        (
+          SELECT array_to_json(coalesce(array_agg(photo), array[]::record[]))
+          FROM
+            (
+            SELECT photo.id, photo.url
+            FROM reviews
+            INNER JOIN reviews_photos photo
+            on reviews.id = photo.review_id
+            where photo.review_id = rv.id
+            ) photo
+        ) as photos
+      from reviews rv
+      where rv.product_id = ${product_id} and rv.reported = false
+      ${orderBy}
+      LIMIT ${count * page}
+      OFFSET ${count * page - count}
+    ;`
+
+
 
   db.query(queryStr, (err, result) => {
     if (err) {

@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   id SERIAL NOT NULL PRIMARY KEY,
   product_id INT,
   rating INT,
-  date VARCHAR,
+  date TIMESTAMP,
   summary VARCHAR,
   body VARCHAR,
   recommend BOOLEAN,
