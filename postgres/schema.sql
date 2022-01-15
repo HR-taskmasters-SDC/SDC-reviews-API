@@ -71,3 +71,9 @@ ALTER TABLE reviews ALTER COLUMN date_timestamp SET DATA TYPE TIMESTAMP with tim
 ALTER TABLE reviews ALTER COLUMN date_timestamp SET DEFAULT now();
 
 ALTER TABLE reviews DROP COLUMN date;
+
+CREATE INDEX reviews_index_brin ON reviews USING brin(id);
+CREATE INDEX products_index_brin ON reviews USING brin(product_id);
+
+DROP INDEX reviews_index;
+DROP INDEX products_index;

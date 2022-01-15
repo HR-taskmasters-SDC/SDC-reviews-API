@@ -52,7 +52,7 @@ app.get('/reviews/:product_id', (req, res) => {
         "product": product_id,
         "page": page,
         "count": count,
-        "results": res.json(result.rows)
+        "results": result.rows
       }
       res.status(200).send(data);
     }

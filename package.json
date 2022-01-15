@@ -19,6 +19,7 @@
   "homepage": "https://github.com/HR-taskmasters-SDC/SDC-reviews-API#readme",
   "dependencies": {
     "express": "^4.17.2",
+    "k6": "^0.0.0",
     "mongoose": "^6.1.6",
     "nodemon": "^2.0.15",
     "pg": "^8.7.1"
