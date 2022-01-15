@@ -65,7 +65,7 @@ app.get('/reviews/:product_id/meta', (req, res) => {
   const queryStr =
       `
       SELECT rv.product_id, (
-        SELECT JSON_AGG(JSON_BUILD_OBJECT(rating, count))
+        SELECT JSON_OBJECT_AGG(rating, count)
         FROM (
           SELECT rating, COUNT(*) as count
           FROM reviews
@@ -74,7 +74,7 @@ app.get('/reviews/:product_id/meta', (req, res) => {
         ) rating
       ) AS ratings,
       (
-        SELECT JSON_AGG(JSON_BUILD_OBJECT(recommend, count))
+        SELECT JSON_OBJECT_AGG(recommend, count)
         FROM (
           SELECT recommend, COUNT(*) as count
           FROM reviews
@@ -83,7 +83,7 @@ app.get('/reviews/:product_id/meta', (req, res) => {
         ) recommend
       ) AS recommended,
       (
-        SELECT ARRAY_TO_JSON(ARRAY_AGG(JSON_BUILD_OBJECT(name, value)))
+        SELECT ARRAY_TO_JSON(ARRAY_AGG(JSON_BUILD_OBJECT(name, JSON_BUILD_OBJECT('id', id, 'value', value))))
         FROM (
           SELECT c.id, c.name, AVG(cr.value) as value
           FROM reviews
