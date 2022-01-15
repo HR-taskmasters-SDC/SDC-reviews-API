@@ -26,16 +26,16 @@ app.get('/reviews/:product_id', (req, res) => {
 
   const queryStr =
     `
-      SELECT rv.id as review_id, rv.rating, rv.summary, rv.recommend, rv.response, rv.body, rv.date, rv.reviewer_name, rv.helpfulness,
+      SELECT rv.id AS review_id, rv.rating, rv.summary, rv.recommend, rv.response, rv.body, rv.date_timestamp AS date, rv.reviewer_name, rv.helpfulness,
         (
           SELECT array_to_json(coalesce(array_agg(photo), array[]::record[]))
           FROM
             (
-            SELECT photo.id, photo.url
-            FROM reviews
-            INNER JOIN reviews_photos photo
-            ON reviews.id = photo.review_id
-            WHERE photo.review_id = rv.id
+              SELECT photo.id, photo.url
+              FROM reviews
+              INNER JOIN reviews_photos photo
+              ON reviews.id = photo.review_id
+              WHERE photo.review_id = rv.id
             ) photo
         ) AS photos
       FROM reviews rv
@@ -53,7 +53,7 @@ app.get('/reviews/:product_id', (req, res) => {
         "product": product_id,
         "page": page,
         "count": count,
-        "results": result.rows
+        "results": res.json(result.rows)
       }
       res.status(200).send(data);
     }

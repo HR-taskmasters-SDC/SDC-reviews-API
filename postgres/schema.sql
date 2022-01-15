@@ -60,3 +60,14 @@ ON characteristics (id);
 
 CREATE INDEX characteristic_reviews_index
 ON characteristic_reviews (id);
+
+ALTER TABLE reviews ALTER COLUMN date TYPE BIGINT USING (date::BIGINT);
+
+ALTER TABLE reviews
+ADD COLUMN date_timestamp TIMESTAMP;
+
+ALTER TABLE reviews ALTER COLUMN date_timestamp SET DATA TYPE TIMESTAMP with time zone USING TIMESTAMP with time zone 'epoch' + date * INTERVAL '1 millisecond';
+
+ALTER TABLE reviews ALTER COLUMN date_timestamp SET DEFAULT now();
+
+ALTER TABLE reviews DROP COLUMN date;
