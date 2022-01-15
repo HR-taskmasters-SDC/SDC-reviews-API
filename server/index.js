@@ -83,7 +83,7 @@ app.get('/reviews/:product_id/meta', (req, res) => {
         ) recommend
       ) AS recommended,
       (
-        SELECT ARRAY_TO_JSON(ARRAY_AGG(JSON_BUILD_OBJECT(name, JSON_BUILD_OBJECT('id', id, 'value', value))))
+        SELECT json_object_agg(name, JSON_BUILD_OBJECT('id', id, 'value', value))
         FROM (
           SELECT c.id, c.name, AVG(cr.value) as value
           FROM reviews
