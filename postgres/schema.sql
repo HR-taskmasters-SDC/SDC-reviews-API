@@ -49,6 +49,9 @@ ALTER SEQUENCE reviews_id_seq RESTART WITH (SELECT COUNT(*) FROM reviews) + 1;
 CREATE INDEX reviews_index
 ON reviews (id);
 
+CREATE INDEX products_index
+ON reviews (product_id);
+
 CREATE INDEX reviews_photos_index
 ON reviews_photos (id);
 
