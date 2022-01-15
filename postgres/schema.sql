@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   id SERIAL NOT NULL PRIMARY KEY,
   product_id INT,
   rating INT,
-  date TIMESTAMP,
+  date VARCHAR,
   summary VARCHAR,
   body VARCHAR,
   recommend BOOLEAN,
@@ -16,9 +16,6 @@ CREATE TABLE IF NOT EXISTS reviews (
   response VARCHAR,
   helpfulness INT
 );
-
-SELECT setval('reviews_id_seq', (SELECT MAX(id) FROM reviews));
-ALTER SEQUENCE reviews_id_seq RESTART WITH (SELECT COUNT FROM reviews) + 1;
 
 CREATE TABLE IF NOT EXISTS reviews_photos (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -46,3 +43,5 @@ COPY reviews_photos FROM '/Users/matt/Desktop/work/data/reviews_photos.csv' DELI
 COPY characteristics FROM '/Users/matt/Desktop/work/data/characteristics.csv' DELIMITERS ',' CSV header;
 COPY characteristic_reviews FROM '/Users/matt/Desktop/work/data/characteristic_reviews.csv' DELIMITERS ',' CSV header;
 
+SELECT setval('reviews_id_seq', (SELECT MAX(id) FROM reviews));
+ALTER SEQUENCE reviews_id_seq RESTART WITH (SELECT COUNT(*) FROM reviews) + 1;

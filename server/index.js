@@ -20,6 +20,10 @@ app.get('/reviews/:product_id', (req, res) => {
     orderBy = 'ORDER BY helpfulness DESC';
   }
 
+  const limit = count * page;
+  const offset = count * page - count;
+  const params = [product_id, orderBy, limit, offset];
+
   const queryStr =
     `
       SELECT rv.id as review_id, rv.rating, rv.summary, rv.recommend, rv.response, rv.body, rv.date, rv.reviewer_name, rv.helpfulness,
@@ -30,24 +34,28 @@ app.get('/reviews/:product_id', (req, res) => {
             SELECT photo.id, photo.url
             FROM reviews
             INNER JOIN reviews_photos photo
-            on reviews.id = photo.review_id
-            where photo.review_id = rv.id
+            ON reviews.id = photo.review_id
+            WHERE photo.review_id = rv.id
             ) photo
-        ) as photos
-      from reviews rv
-      where rv.product_id = ${product_id} and rv.reported = false
+        ) AS photos
+      FROM reviews rv
+      WHERE rv.product_id = ${product_id} AND rv.reported = false
       ${orderBy}
       LIMIT ${count * page}
       OFFSET ${count * page - count}
     ;`
 
-
-
   db.query(queryStr, (err, result) => {
     if (err) {
       console.error(err);
     } else {
-      res.status(200).send(result);
+      const data = {
+        "product": product_id,
+        "page": page,
+        "count": count,
+        "results": result.rows
+      }
+      res.status(200).send(data);
     }
   })
 });
