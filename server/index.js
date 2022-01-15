@@ -22,7 +22,6 @@ app.get('/reviews/:product_id', (req, res) => {
 
   const limit = count * page;
   const offset = count * page - count;
-  const params = [product_id, orderBy, limit, offset];
 
   const queryStr =
     `
@@ -41,8 +40,8 @@ app.get('/reviews/:product_id', (req, res) => {
       FROM reviews rv
       WHERE rv.product_id = ${product_id} AND rv.reported = false
       ${orderBy}
-      LIMIT ${count * page}
-      OFFSET ${count * page - count}
+      LIMIT ${limit}
+      OFFSET ${offset}
     ;`
 
   db.query(queryStr, (err, result) => {
