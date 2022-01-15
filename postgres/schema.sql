@@ -45,3 +45,15 @@ COPY characteristic_reviews FROM '/Users/matt/Desktop/work/data/characteristic_r
 
 SELECT setval('reviews_id_seq', (SELECT MAX(id) FROM reviews));
 ALTER SEQUENCE reviews_id_seq RESTART WITH (SELECT COUNT(*) FROM reviews) + 1;
+
+CREATE INDEX reviews_index
+ON reviews (id);
+
+CREATE INDEX reviews_photos_index
+ON reviews_photos (id);
+
+CREATE INDEX characteristics_index
+ON characteristics (id);
+
+CREATE INDEX characteristic_reviews_index
+ON characteristic_reviews (id);
