@@ -19,7 +19,13 @@ module.exports = {
 
     getAllReviews(orderBy, product_id, limit, offset)
       .then(result => {
-        res.status(200).send(result.rows[0]);
+        const data = {
+          "product": product_id,
+          "page": page,
+          "count": count,
+          "results": result.rows
+        }
+        res.status(200).send(data);
       })
       .catch(err => {
         console.error(err);
@@ -30,7 +36,8 @@ module.exports = {
     const product_id = req.params.product_id;
     getAllMetaData(product_id)
       .then(result => {
-        res.status(200).send(result.rows[0]);
+        const data = result.rows[0];
+        res.status(200).send(data);
       })
       .catch(err => {
         console.error(err);

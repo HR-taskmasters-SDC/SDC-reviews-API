@@ -5,7 +5,7 @@ module.exports = {
     const queryStr =
     `
       SELECT rv.id AS review_id, rv.rating, rv.summary, rv.recommend, rv.response, rv.body, rv.date_timestamp AS date, rv.reviewer_name, rv.helpfulness,
-        ( SELECT json_agg(photo)
+        ( SELECT array_to_json(coalesce(array_agg(photo), array[]::record[]))
           FROM
             ( SELECT id, url
               FROM reviews_photos

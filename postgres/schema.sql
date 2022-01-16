@@ -77,3 +77,7 @@ CREATE INDEX products_index_brin ON reviews USING brin(product_id);
 
 DROP INDEX reviews_index;
 DROP INDEX products_index;
+
+UPDATE reviews
+SET response = NULL
+WHERE response = 'null';
