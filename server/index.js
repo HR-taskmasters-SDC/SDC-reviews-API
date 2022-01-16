@@ -30,21 +30,19 @@ app.get('/reviews/:product_id', (req, res) => {
           SELECT array_to_json(coalesce(array_agg(photo), array[]::record[]))
           FROM
             (
-              SELECT photo.id, photo.url
-              FROM reviews
-              INNER JOIN reviews_photos photo
-              ON reviews.id = photo.review_id
-              WHERE photo.review_id = rv.id
+              SELECT id, url
+              FROM reviews_photos
+              WHERE reviews_photos.review_id = rv.id
             ) photo
         ) AS photos
       FROM reviews rv
-      WHERE rv.product_id = ${product_id} AND rv.reported = false
+      WHERE rv.product_id = $1 AND rv.reported = false
       ${orderBy}
-      LIMIT ${limit}
-      OFFSET ${offset}
+      LIMIT $2
+      OFFSET $3
     ;`
 
-  db.query(queryStr, (err, result) => {
+  db.query(queryStr, [product_id, limit, offset], (err, result) => {
     if (err) {
       console.error(err);
     } else {
@@ -68,7 +66,7 @@ app.get('/reviews/:product_id/meta', (req, res) => {
         FROM (
           SELECT rating, COUNT(*) as count
           FROM reviews
-          WHERE product_id = ${product_id}
+          WHERE product_id = $1
           GROUP BY rating
         ) rating
       ) AS ratings,
@@ -77,7 +75,7 @@ app.get('/reviews/:product_id/meta', (req, res) => {
         FROM (
           SELECT recommend, COUNT(*) as count
           FROM reviews
-          WHERE product_id = ${product_id}
+          WHERE product_id = $1
           GROUP BY recommend
         ) recommend
       ) AS recommended,
@@ -90,15 +88,15 @@ app.get('/reviews/:product_id/meta', (req, res) => {
           ON reviews.id = cr.review_id
           JOIN characteristics c
           ON cr.characteristic_id = c.id
-          WHERE reviews.product_id = ${product_id}
+          WHERE reviews.product_id = $1
           GROUP BY c.id
         ) characteristic
       ) AS characteristics
       FROM reviews rv
-      WHERE rv.product_id = ${product_id}
+      WHERE rv.product_id = $1
     ;`
 
-  db.query(queryStr, (err, result) => {
+  db.query(queryStr, [product_id], (err, result) => {
     if (err) {
       console.error(err);
     } else {
@@ -110,7 +108,7 @@ app.get('/reviews/:product_id/meta', (req, res) => {
 
 app.post('/reviews/:product_id', (req, res) => {
   const product_id = req.params.product_id;
-  const date = Date.now().toString();
+  const date = Date.now();
   const rating = req.body.rating;
   const summary = req.body.summary;
   const body = req.body.body;
@@ -122,11 +120,11 @@ app.post('/reviews/:product_id', (req, res) => {
   const helpfulness = req.body.helpfulness || 0;
 
   const queryStr = `INSERT INTO reviews
-                    (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
+                    (product_id, rating, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
                     VALUES
-                    (${product_id}, ${rating}, ${date}, '${summary}', '${body}', ${recommend}, ${reported}, '${reviewer_name}', '${reviewer_email}', '${response}', ${helpfulness});`
+                    ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`
 
-  db.query(queryStr, (err, result) => {
+  db.query(queryStr, [product_id, rating, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness], (err, result) => {
     if (err) {
       console.error(err);
     } else {
@@ -139,8 +137,8 @@ app.put('/reviews/:review_id/helpful', (req, res) => {
   const review_id = req.params.review_id;
   const queryStr = `UPDATE reviews
                     SET helpfulness = helpfulness + 1
-                    WHERE id = ${review_id};`
-  db.query(queryStr, (err, result) => {
+                    WHERE id = $1;`
+  db.query(queryStr, [review_id], (err, result) => {
     if (err) {
       console.error(err);
     } else {
@@ -153,8 +151,8 @@ app.put('/reviews/:review_id/report', (req, res) => {
   const review_id = req.params.review_id;
   const queryStr = `UPDATE reviews
                     SET reported = NOT reported
-                    WHERE id = ${review_id};`
-  db.query(queryStr, (err, result) => {
+                    WHERE id = $1;`
+  db.query(queryStr, [review_id], (err, result) => {
     if (err) {
       console.error(err);
     } else {

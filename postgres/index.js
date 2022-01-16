@@ -1,4 +1,4 @@
-const { Pool, Client } = require('pg');
+const { Pool } = require('pg');
 
 const credentials = {
   user: 'postgres',
@@ -8,7 +8,7 @@ const credentials = {
   port: 5432
 };
 
-const db = new Client(credentials);
+const db = new Pool(credentials);
 
 db.connect()
   .then(response => {
