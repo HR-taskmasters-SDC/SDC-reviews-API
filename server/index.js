@@ -26,8 +26,7 @@ app.get('/reviews/:product_id', (req, res) => {
   const queryStr =
     `
       SELECT rv.id AS review_id, rv.rating, rv.summary, rv.recommend, rv.response, rv.body, rv.date_timestamp AS date, rv.reviewer_name, rv.helpfulness,
-        (
-          SELECT array_to_json(coalesce(array_agg(photo), array[]::record[]))
+        ( SELECT json_agg(photo)
           FROM
             (
               SELECT id, url
