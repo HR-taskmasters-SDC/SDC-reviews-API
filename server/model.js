@@ -4,16 +4,16 @@ module.exports = {
   getAllReviews: (orderBy, product_id, limit, offset) => {
     const queryStr =
     `
-      SELECT rv.id AS review_id, rv.rating, rv.summary, rv.recommend, rv.response, rv.body, rv.date_timestamp AS date, rv.reviewer_name, rv.helpfulness,
+      SELECT id AS review_id, rating, summary, recommend, response, body, date_timestamp AS date, reviewer_name, helpfulness,
         ( SELECT array_to_json(coalesce(array_agg(photo), array[]::record[]))
           FROM
             ( SELECT id, url
               FROM reviews_photos
-              WHERE reviews_photos.review_id = rv.id
+              WHERE reviews_photos.review_id = reviews.id
             ) photo
         ) AS photos
-      FROM reviews rv
-      WHERE rv.product_id = $1 AND rv.reported = false
+      FROM reviews
+      WHERE product_id = $1 AND reported = false
       ${orderBy}
       LIMIT $2
       OFFSET $3
