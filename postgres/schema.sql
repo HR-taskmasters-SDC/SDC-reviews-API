@@ -46,8 +46,8 @@ COPY characteristic_reviews FROM '/Users/matt/Desktop/work/data/characteristic_r
 SELECT setval('reviews_id_seq', (SELECT MAX(id) FROM reviews));
 ALTER SEQUENCE reviews_id_seq RESTART WITH (SELECT COUNT(*) FROM reviews) + 1;
 
-CREATE INDEX reviews_index ON reviews (id);
-CREATE INDEX products_index ON reviews (product_id);
+CREATE INDEX reviews_index_brin ON reviews USING brin(id);
+CREATE INDEX products_index_brin ON reviews USING brin(product_id);
 CREATE INDEX reviews_photos_index ON reviews_photos (id);
 CREATE INDEX characteristics_index ON characteristics (id);
 CREATE INDEX characteristic_reviews_index ON characteristic_reviews (id);
@@ -56,11 +56,5 @@ ALTER TABLE reviewsADD COLUMN date_timestamp TIMESTAMP;
 ALTER TABLE reviews ALTER COLUMN date_timestamp SET DATA TYPE TIMESTAMP with time zone USING TIMESTAMP with time zone 'epoch' + date * INTERVAL '1 millisecond';
 ALTER TABLE reviews ALTER COLUMN date_timestamp SET DEFAULT now();
 ALTER TABLE reviews DROP COLUMN date;
-
-CREATE INDEX reviews_index_brin ON reviews USING brin(id);
-CREATE INDEX products_index_brin ON reviews USING brin(product_id);
-
-DROP INDEX reviews_index;
-DROP INDEX products_index;
 
 UPDATE reviews SET response = NULL WHERE response = 'null';
