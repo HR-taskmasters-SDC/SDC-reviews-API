@@ -3,7 +3,6 @@ const app = express();
 const path = require('path');
 const port = 3000;
 const router = require('./router.js');
-const db = require('../postgres');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
