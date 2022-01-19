@@ -55,6 +55,7 @@ CREATE INDEX products_index ON reviews (product_id);
 CREATE INDEX reported_index ON reviews (reported);
 CREATE INDEX reviews_photos_reviewid_index ON reviews_photos (review_id);
 CREATE INDEX characteristics_products_index ON characteristics (product_id);
+CREATE INDEX characteristics_index ON characteristic_reviews (characteristic_id);
 
 ALTER TABLE reviewsADD COLUMN date_timestamp TIMESTAMP;
 ALTER TABLE reviews ALTER COLUMN date_timestamp SET DATA TYPE TIMESTAMP with time zone USING TIMESTAMP with time zone 'epoch' + date * INTERVAL '1 millisecond';
