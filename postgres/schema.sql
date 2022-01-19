@@ -38,10 +38,15 @@ CREATE TABLE IF NOT EXISTS characteristic_reviews (
 
 -- TRUNCATE TABLE reviews, reviews_photos, characteristics, characteristic_reviews;
 
-COPY reviews FROM '/Users/matt/Desktop/work/data/reviews.csv' DELIMITERS ',' CSV header;
-COPY reviews_photos FROM '/Users/matt/Desktop/work/data/reviews_photos.csv' DELIMITERS ',' CSV header;
-COPY characteristics FROM '/Users/matt/Desktop/work/data/characteristics.csv' DELIMITERS ',' CSV header;
-COPY characteristic_reviews FROM '/Users/matt/Desktop/work/data/characteristic_reviews.csv' DELIMITERS ',' CSV header;
+-- COPY reviews FROM '/Users/matt/Desktop/work/data/reviews.csv' DELIMITERS ',' CSV header;
+-- COPY reviews_photos FROM '/Users/matt/Desktop/work/data/reviews_photos.csv' DELIMITERS ',' CSV header;
+-- COPY characteristics FROM '/Users/matt/Desktop/work/data/characteristics.csv' DELIMITERS ',' CSV header;
+-- COPY characteristic_reviews FROM '/Users/matt/Desktop/work/data/characteristic_reviews.csv' DELIMITERS ',' CSV header;
+
+COPY reviews FROM '/home/ubuntu/data/reviews.csv' DELIMITERS ',' CSV header;
+COPY reviews_photos FROM '/home/ubuntu/data/reviews_photos.csv' DELIMITERS ',' CSV header;
+COPY characteristics FROM '/home/ubuntu/data/characteristics.csv' DELIMITERS ',' CSV header;
+COPY characteristic_reviews FROM '/home/ubuntu/data/characteristic_reviews.csv' DELIMITERS ',' CSV header;
 
 SELECT setval('reviews_id_seq', (SELECT MAX(id) FROM reviews));
 ALTER SEQUENCE reviews_id_seq RESTART WITH (SELECT COUNT(*) FROM reviews) + 1;
