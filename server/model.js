@@ -57,40 +57,6 @@ module.exports = {
       WHERE rv.product_id = $1
     ;`
 
-  //   `
-  //   SELECT rv.product_id, (
-  //     SELECT JSON_OBJECT_AGG(rating, count)
-  //     FROM (
-  //       SELECT rating, COUNT(*) as count
-  //       FROM reviews
-  //       WHERE product_id = $1
-  //       GROUP BY rating
-  //     ) rating
-  //   ) AS ratings,
-  //   (
-  //     SELECT JSON_OBJECT_AGG(recommend, count)
-  //     FROM (
-  //       SELECT recommend, COUNT(*) as count
-  //       FROM reviews
-  //       WHERE product_id = $1
-  //       GROUP BY recommend
-  //     ) recommend
-  //   ) AS recommended,
-  //   (
-  //     SELECT json_object_agg(name, JSON_BUILD_OBJECT('id', id, 'value', value))
-  //     FROM (
-  //       SELECT c.id, c.name, AVG(cr.value)::numeric(10,4) as value
-  //       FROM characteristics c
-  //       INNER JOIN characteristic_reviews cr
-  //       ON c.id = cr.characteristic_id
-  //       WHERE c.product_id = $1
-  //       GROUP BY c.id
-  //     ) characteristic
-  //   ) AS characteristics
-  //   FROM reviews rv
-  //   WHERE rv.product_id = $1
-  // ;`
-
     return db.query(queryStr, [product_id]);
   },
 
