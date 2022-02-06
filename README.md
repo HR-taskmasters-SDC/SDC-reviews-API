@@ -18,6 +18,8 @@ This review API is built out for supporting the front-end e-commerce application
    
 ## Optimization Method
 
+The following strategies were used for optimizing the performance and scaling at the application level.  
+
 * PostgreSQL indexes
 * Redis cache
 * Nginx load balancer
